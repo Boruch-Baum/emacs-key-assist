@@ -329,34 +329,31 @@ Or enter a different command regexp or keymap name: " spec)
             (and (stringp spec)
                  (zerop (length spec))))
     (user-error "Nothing to do!"))
-  (let* ((prompt   (or prompt "Select: "))
-         (commands (key-assist--get-cmds spec nosort))
-         (choices  (mapcar 'cdr commands))
-         choice minibuffer-history)
-    (if (not choices)
-      (user-error "No choices found.")
-      ;; FIXME: Give a detailed explanation of what was search for,
-      ;; and what to do to get a better result.
-      ;;
-      ;; IDEA: In function `key-assist--get-cmds', if the final
-      ;; `result-list' is NIL, return `spec'. Then here `commands'
-      ;; would be the string `spec' instead of a list, so instead of
-      ;; checking for (not choices), check for (not (listp choices)),
-      ;; and we can now share the value of `spec' as part of the
-      ;; explanatory message.
-      ;;
-      ;; FIXME: What should we do for a "no choices found" condition
-      ;; when not called interactively?
-     (while (not (setq choice
-                   (cl-position
-                     (substring-no-properties ; Is -no-properties necessary?
-                       (completing-read prompt choices nil t))
-                     choices :test 'equal))))
-     (command-execute (car (nth choice commands))))))
+  (let (commands choices choice minibuffer-history)
+    (while (not choices)
+      (setq commands (key-assist--get-cmds spec nosort))
+      (when (not (setq choices (mapcar 'cdr commands)))
+        (read-regexp (format "No choices found for \"%s\".
+Try a differernt command regexp or keymap name: "
+                             spec)
+                     spec)))
+    (while (not (setq choice
+                  (cl-position
+;;                  (substring-no-properties ; is -no-properties necessary?
+                      (completing-read
+                        (or prompt "Select an item to launch it: ")
+                        choices nil t)
+;; ) for removal of `substring-no-properties'
+                    choices :test 'equal))))
+    (command-execute (car (nth choice commands)))))
 
 
 ;;
 ;;; Conclusion
+
+;; FIXME: This command can be very slow for very large regexp
+;; collections. Try giving it ".*" and see how long it takes to
+;; collect and present (for me, ~460 results).
 
 (provide 'key-assist)
 
