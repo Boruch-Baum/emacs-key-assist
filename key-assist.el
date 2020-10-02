@@ -31,13 +31,17 @@
 ;;   to launch any command on the cheat-sheet list. At its simplest,
 ;;   it gives the user a list of keybindings for commands specific to
 ;;   the current buffer's major-mode, but it's trivially simple to ask
-;;   it to build an alternative (see below). Learn the keybindings,
-;;   run the command, and return to work quickly.
+;;   it to build an alternative (see below).
+
+;;     Use this package to: learn keybindings; learn what commands are
+;;     available specifically for the current buffer; run a command
+;;     from a descriptive list; and afterwards return to work quickly.
 
 ;;   For emacs *programmers*: This package provides a simple, flexible
-;;   way to produce custom launchers for sets of commands, with each
-;;   command being described, along with its direct keybinding for
-;;   direct use without the launcher (see below).
+;;   way to produce custom keybinding cheat-sheets and command
+;;   launchers for sets of commands, with each command being
+;;   described, along with its direct keybinding for direct use
+;;   without the launcher (see below).
 
 ;;   If you've ever used packages such as `ivy' or `magit', you've
 ;;   probably benefited from each's custom combination keybinding
@@ -53,8 +57,7 @@
 ;;
 ;;; Dependencies:
 
-;; `cl-lib' - For `cl-member' and `cl-position', but `cl-lib' is long
-;;            part of all modern emcasen.
+;; `cl-lib': For `cl-member',`cl-position'
 
 ;;
 ;;; Installation:
@@ -324,14 +327,15 @@ Or enter a different command regexp or keymap name: " spec)
     (while (not choices)
       (setq commands (key-assist--get-cmds spec nosort))
       (when (not (setq choices (mapcar 'cdr commands)))
-        (read-regexp (format "No choices found for \"%s\".
+        (setq spec (read-regexp (format "No choices found for \"%s\".
 Try a differernt command regexp or keymap name: "
-                             spec)
-                     spec)))
+                                        spec)
+                                spec))))
     (while (not (setq choice
                   (cl-position
                       (completing-read
-                        (or prompt "Select an item to launch it: ")
+                        (or prompt "You may need to press TAB to see the result list.
+Select an item on the list to launch it: ")
                         choices nil t)
                     choices :test 'equal))))
     (command-execute (car (nth choice commands)))))
