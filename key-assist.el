@@ -99,6 +99,20 @@
 
 ;;   See the docstrings for functions `key-assist' and
 ;;   `key-assist--get-cmds'.
+;;
+
+;;
+;;; Programmatic example:
+
+;;   Here's a most simple example that presents all of the keybindings
+;;   for 'my-mode:
+
+;;      (defun my-mode-keybinding-cheatsheet-launcher ()
+;;        (interactive)
+;;        (when (eq major-mode my-mode)
+;;          (key-assist)))
+;;      (define-key my-mode-map "?"
+;;                  'my-mode-keybinding-cheatsheet-launcher)
 
 ;;
 ;;; Configuration:
@@ -110,7 +124,8 @@
 ;;
 ;;; Compatability
 
-;; Tested with emacs 26.1 in debian.
+;; Tested with emacs 26.1 and emacs-snapshot 28(~2020-09-16), both in
+;; debian.
 
 ;;  TODO:
 ;;
@@ -347,6 +362,30 @@ Select an item on the list to launch it: ")
 ;; FIXME: This command can be very slow for very large regexp
 ;; collections. Try giving it ".*" and see how long it takes to
 ;; collect and present (for me, ~460 results).
+
+;; TODO: Integrate the following into the commentary:
+
+;; 1) Interactively...
+;;
+;; 1.1) A user finds himself in an unfamiliar mode buffer, and isn't sure
+;;      what that mode's options are and how to use them. You mention
+;;      further that you tried it in a dired-mode, so you saw its default
+;;      operation in such a case. For dired-mode, the result-list is very
+;;      long; for other modes, such as occur-mode or a packages buffer,
+;;      you'll get a shorter list. The more obscure the mode, the more
+;;      useful this use-case.
+;;
+;; 1.2) A user has a vague idea of a command name of interest, so enters a
+;;      regex or substring of it to see a list of keybindings and
+;;      descriptions of matches (as relevant for the current buffer).
+;;
+;; 2) Programmatically...
+;;
+;; 2.1) A developer wants to offer a cheat sheet / launcher for a package
+;;      (similar in function to transient/hydra) but with less programming.
+;;      This package offers wide latitude of how to compose a command list,
+;;      what to display, how to sort, how to prompt. The args can be
+;;      trivially simple to quite complex.
 
 (provide 'key-assist)
 
