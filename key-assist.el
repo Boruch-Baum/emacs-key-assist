@@ -339,11 +339,9 @@ Try a differernt command regexp or keymap name: "
                      spec)))
     (while (not (setq choice
                   (cl-position
-;;                  (substring-no-properties ; is -no-properties necessary?
                       (completing-read
                         (or prompt "Select an item to launch it: ")
                         choices nil t)
-;; ) for removal of `substring-no-properties'
                     choices :test 'equal))))
     (command-execute (car (nth choice commands)))))
 
