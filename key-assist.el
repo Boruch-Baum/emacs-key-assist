@@ -193,7 +193,7 @@ description string."
       (when shortest
         (list shortest cmd (concat shortest (key-assist--get-description cmd)))))))
 
-(defun key-assist--get-cmds (&optional spec nosort nofinish)
+(defun key-assist--get-cmds (spec &optional nosort nofinish)
   "Return a list of commands, keybindings, and descriptions.
 
 Returns a list of CONS, whose CAR is the command, and whose CDR
@@ -224,79 +224,70 @@ elements (anything commandp description-string).
 Optional arg NOFINSH return a list in `key-assist--parse-cmd'
 format instead of the list of CONS described above. It is used
 internally for processing 'collection lists."
-  (setq spec
-    (cond
-     ((or (not spec)
-          (and (stringp spec)
-               (zerop (length spec))))
-       ;; FIXME: Now we are performing this in `key-assist', so at
-       ;; this point if this condition is encountered, it is some kind
-       ;; of error. So, presume a NIL or an empty string crept into a
-       ;; 'collection, and exit the function.
-       (let ((str (symbol-name major-mode)))
-         (substring str 0 (1+ (string-match "-" str)))))
-     ((and (stringp spec)
-           (boundp (intern spec))
-           (keymapp (symbol-value (intern spec))))
-       (symbol-value (intern spec)))
-     (t spec)))
-  (let (name result-elem (result-list '()))
-    (cond
-     ((keymapp spec)
-       (let (cmd)
-         (dolist (elem spec)
-           (cond
-            ((atom elem)) ;; eg. 'keymap
-            ((listp (setq cmd (cdr elem)))) ;; TODO: possibly also embedded keymap?
-            ((commandp cmd) ;; this excludes 'menubar
+  (when (and spec
+             (not (and (stringp spec)
+                       (zerop (length spec)))))
+    (when (and (stringp spec)
+               (boundp (intern spec))
+               (keymapp (symbol-value (intern spec))))
+        (setq spec (symbol-value (intern spec))))
+    (let (name result-elem (result-list '()))
+      (cond
+       ((keymapp spec)
+         (let (cmd)
+           (dolist (elem spec)
+             (cond
+              ((atom elem)) ;; eg. 'keymap
+              ((listp (setq cmd (cdr elem)))) ;; TODO: possibly also embedded keymap?
+              ((commandp cmd) ;; this excludes 'menubar
+                (when (setq result-elem (key-assist--parse-cmd cmd result-list))
+                  (push result-elem result-list)))))))
+       ((stringp spec)
+         (mapatoms
+           (lambda (x)
+              (and (commandp x)
+                   (string-match spec (setq name (symbol-name x)))
+                   (when (setq result-elem
+                           (key-assist--parse-cmd x result-list))
+                     (push result-elem result-list))))))
+       ((listp spec)
+         (cond
+          ((eq (car spec) 'collection)
+            (dolist (collection-element (cdr spec))
+              ;; Maybe it's more efficient to sort each collection element?
+              (let ((temp-list (key-assist--get-cmds collection-element 'nosort 'nofinish)))
+                (dolist (elem temp-list)
+                  (push elem result-list)))))
+          ((commandp (car spec))
+            (dolist (cmd spec)
               (when (setq result-elem (key-assist--parse-cmd cmd result-list))
-                (push result-elem result-list)))))))
-     ((stringp spec)
-       (mapatoms
-         (lambda (x)
-            (and (commandp x)
-                 (string-match spec (setq name (symbol-name x)))
-                 (when (setq result-elem
-                         (key-assist--parse-cmd x result-list))
-                   (push result-elem result-list))))))
-     ((listp spec)
-       (cond
-        ((eq (car spec) 'collection)
-          (dolist (collection-element (cdr spec))
-            ;; Maybe it's more efficient to sort each collection element?
-            (let ((temp-list (key-assist--get-cmds collection-element 'nosort 'nofinish)))
-              (dolist (elem temp-list)
-                (push elem result-list)))))
-        ((commandp (car spec))
-          (dolist (cmd spec)
-            (when (setq result-elem (key-assist--parse-cmd cmd result-list))
-              (push result-elem result-list))))
-        (t ; spec is a list of CONS (cmd . (or string function))
-          (dolist (elem spec)
-            (when (key-assist--vet-cmd (car elem) result-list)
-              (let ((shortest (key-assist--get-keybinding (car elem))))
-                (when shortest
-                  (push (list shortest
-                              (car elem)
-                              (if (stringp (cadr elem))
-                                (cadr elem)
-                               (funcall (cadr elem))))
-                        result-list))))))))
-     (t (error "Improper SPEC format.")))
-    (when (not nosort)
-      (setq result-list
-        (if (functionp nosort)
-          (funcall nosort result-list)
-         (sort result-list
-               (lambda (a b) (cond
-                              ((= (length (car a)) (length (car b)))
-                                 (string< (car a) (car b)))
-                              ((< (length (car a)) (length (car b))))
-                              (t nil)))))))
-    (if nofinish
-      result-list
-     (mapcar (lambda (x) (cons (nth 1 x) (nth 2 x)))
-             result-list))))
+                (push result-elem result-list))))
+          (t ; spec is a list of CONS (cmd . (or string function))
+            (dolist (elem spec)
+              (when (key-assist--vet-cmd (car elem) result-list)
+                (let ((shortest (key-assist--get-keybinding (car elem))))
+                  (when shortest
+                    (push (list shortest
+                                (car elem)
+                                (if (stringp (cadr elem))
+                                  (cadr elem)
+                                 (funcall (cadr elem))))
+                          result-list))))))))
+       (t (error "Improper SPEC format.")))
+      (when (not nosort)
+        (setq result-list
+          (if (functionp nosort)
+            (funcall nosort result-list)
+           (sort result-list
+                 (lambda (a b) (cond
+                                ((= (length (car a)) (length (car b)))
+                                   (string< (car a) (car b)))
+                                ((< (length (car a)) (length (car b))))
+                                (t nil)))))))
+      (if nofinish
+        result-list
+       (mapcar (lambda (x) (cons (nth 1 x) (nth 2 x)))
+               result-list)))))
 
 ;;
 ;;; Interactive functions
