@@ -229,6 +229,10 @@ internally for processing 'collection lists."
      ((or (not spec)
           (and (stringp spec)
                (zerop (length spec))))
+       ;; FIXME: Now we are performing this in `key-assist', so at
+       ;; this point if this condition is encountered, it is some kind
+       ;; of error. So, presume a NIL or an empty string crept into a
+       ;; 'collection, and exit the function.
        (let ((str (symbol-name major-mode)))
          (substring str 0 (1+ (string-match "-" str)))))
      ((and (stringp spec)
@@ -313,7 +317,18 @@ a description of arg NOSORT, see function `key-assist--get-cmds'.
 
 See also variables `key-assist-exclude-regexps' and
 `key-assist-exclude-cmds'."
-  (interactive "MOptional: Enter command regexp or keymap name: ")
+  (interactive)
+  (when (not spec)
+    (setq spec (symbol-name major-mode)
+          spec (substring spec 0 (1+ (string-match "-" spec)))
+          spec (read-regexp
+                 (format "Press RET for keybinding cheatsheet/launcher for \"%s\" commands,
+Or enter a different command regexp or keymap name: " spec)
+                         spec)))
+  (when (or (not spec)
+            (and (stringp spec)
+                 (zerop (length spec))))
+    (user-error "Nothing to do!"))
   (let* ((prompt   (or prompt "Select: "))
          (commands (key-assist--get-cmds spec nosort))
          (choices  (mapcar 'cdr commands))
