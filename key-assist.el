@@ -67,7 +67,7 @@
 ;;
 ;;; Interactive operation:
 
-;;   Run M-x key-assist from the buffer of interest. Specify a
+;;   Run M-x `key-assist' from the buffer of interest. Specify a
 ;;   selection (or don't), press <TAB> to view the presentation, and
 ;;   then either exit with your new-found knowledge of the command
 ;;   keybindings, or use standard emacs tab completion to select an
@@ -78,10 +78,10 @@
 ;;   the first word of the buffer's major mode. For, example, in a
 ;;   `w3m' buffer, the list will be of all interactive functions
 ;;   beginning `w3m-'. This works out to be great as a default, but
-;;   isn't always useful. For example, in an `emacs-lisp-mode' buffer,
-;;   what would you expect it to usefully produce? At the other
-;;   extreme might be a case of a buffer too many obscure keybindings
-;;   of little use.
+;;   isn't always useful. For example, in an `emacs-lisp-mode' buffer
+;;   or a `lisp-interaction-mode', what would you expect it to
+;;   usefully produce? At the other extreme might be a case of a
+;;   buffer with too many obscure keybindings of little use.
 
 ;;   You can also respond to the prompt with your own regexp of
 ;;   commands to show, or with the name of a keymap of your choice.
@@ -95,24 +95,21 @@
 ;;   keybinding length, alphabetically.
 
 ;;
-;;; Programmatic operation:
-
-;;   See the docstrings for functions `key-assist' and
-;;   `key-assist--get-cmds'.
-;;
-
-;;
-;;; Programmatic example:
+;;; Programmating example:
 
 ;;   Here's a most simple example that presents all of the keybindings
 ;;   for 'my-mode:
-
+;;
 ;;      (defun my-mode-keybinding-cheatsheet-launcher ()
 ;;        (interactive)
 ;;        (when (eq major-mode my-mode)
 ;;          (key-assist)))
 ;;      (define-key my-mode-map "?"
 ;;                  'my-mode-keybinding-cheatsheet-launcher)
+
+;;   See the docstrings for functions `key-assist' and
+;;   `key-assist--get-cmds' for the description of ARGS that can be
+;;   used to customize the output.
 
 ;;
 ;;; Configuration:
@@ -126,13 +123,6 @@
 
 ;; Tested with emacs 26.1 and emacs-snapshot 28(~2020-09-16), both in
 ;; debian.
-
-;;  TODO:
-;;
-;;   * In a vanilla emacs environment, the sorting appears wrong
-;;     seemingly partially because of how the completion buffer is
-;;     constructed, bottom-up. This isn't an issue when using one of
-;;     the supplemental minibuffer completion packages.
 
 
 ;;
@@ -359,34 +349,9 @@ Select an item on the list to launch it: ")
 ;;
 ;;; Conclusion
 
-;; FIXME: This command can be very slow for very large regexp
-;; collections. Try giving it ".*" and see how long it takes to
-;; collect and present (for me, ~460 results).
-
-;; TODO: Integrate the following into the commentary:
-
-;; 1) Interactively...
-;;
-;; 1.1) A user finds himself in an unfamiliar mode buffer, and isn't sure
-;;      what that mode's options are and how to use them. You mention
-;;      further that you tried it in a dired-mode, so you saw its default
-;;      operation in such a case. For dired-mode, the result-list is very
-;;      long; for other modes, such as occur-mode or a packages buffer,
-;;      you'll get a shorter list. The more obscure the mode, the more
-;;      useful this use-case.
-;;
-;; 1.2) A user has a vague idea of a command name of interest, so enters a
-;;      regex or substring of it to see a list of keybindings and
-;;      descriptions of matches (as relevant for the current buffer).
-;;
-;; 2) Programmatically...
-;;
-;; 2.1) A developer wants to offer a cheat sheet / launcher for a package
-;;      (similar in function to transient/hydra) but with less programming.
-;;      This package offers wide latitude of how to compose a command list,
-;;      what to display, how to sort, how to prompt. The args can be
-;;      trivially simple to quite complex.
-
 (provide 'key-assist)
 
 ;;; key-assist.el ends here
+
+;; NOTE: For integration into emacs:
+;; * defcustoms should include  :version "28.1"
