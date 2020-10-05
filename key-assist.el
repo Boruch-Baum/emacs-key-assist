@@ -1,12 +1,16 @@
-;;; key-assist.el --- minibuffer keybinding cheatsheet and launcher -*- lexical-binding: t -*-
+;;; key-assist.el --- Minibuffer keybinding cheatsheet and launcher -*- lexical-binding: t -*-
 
 ;; Copyright © 2020, Boruch Baum <boruch_baum@gmx.com>
 ;; Available for assignment to the Free Software Foundation, Inc.
 
 ;; Author: Boruch Baum <boruch_baum@gmx.com>
 ;; Maintainer: Boruch Baum <boruch_baum@gmx.com>
-;; Keywords: minibuffer keybindings
+;; Homepage: ---------------------
+;; Keywords: abbrev convenience docs help
 ;; Package: key-assist
+;; Package-Version: 1.0
+;; Package-Requires: ((emacs "24.3"))
+;;   (emacs "24.3") for: lexical-binding, user-error, cl-lib
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -26,7 +30,7 @@
 ;;
 ;;; Commentary:
 
-;;   For emacs *users*: This package provides an interactive command
+;;   For Emacs *users*: This package provides an interactive command
 ;;   to easily produce a keybinding cheat-sheet "on-the-fly", and then
 ;;   to launch any command on the cheat-sheet list. At its simplest,
 ;;   it gives the user a list of keybindings for commands specific to
@@ -37,7 +41,7 @@
 ;;     available specifically for the current buffer; run a command
 ;;     from a descriptive list; and afterwards return to work quickly.
 
-;;   For emacs *programmers*: This package provides a simple, flexible
+;;   For Emacs *programmers*: This package provides a simple, flexible
 ;;   way to produce custom keybinding cheat-sheets and command
 ;;   launchers for sets of commands, with each command being
 ;;   described, along with its direct keybinding for direct use
@@ -48,7 +52,7 @@
 ;;   cheatsheet and launcher: `hydra' in the case of `ivy', and
 ;;   `transient' for `magit'. The current package `key-assist' offers
 ;;   a generic and very simple alternative requiring only the
-;;   `completing-read' function commonly used in core vanilla emacs.
+;;   `completing-read' function commonly used in core vanilla Emacs.
 ;;   `key-assist' is trivial to implement "on-the-fly" interactively
 ;;   for any buffer, and programmatically much simpler to customize
 ;;   that either `hydra' or `transient'. And did I mention that it
@@ -70,7 +74,7 @@
 ;;   Run M-x `key-assist' from the buffer of interest. Specify a
 ;;   selection (or don't), press <TAB> to view the presentation, and
 ;;   then either exit with your new-found knowledge of the command
-;;   keybindings, or use standard emacs tab completion to select an
+;;   keybindings, or use standard Emacs tab completion to select an
 ;;   option, and press <RETURN> to perform the action.
 ;;
 ;;   If you choose not to respond to the initial prompt, a list of
@@ -121,17 +125,17 @@
 ;;
 ;;; Compatability
 
-;; Tested with emacs 26.1 and emacs-snapshot 28(~2020-09-16), both in
+;; Tested with Emacs 26.1 and emacs-snapshot 28(~2020-09-16), both in
 ;; debian.
 
 
 ;;
-;;; Code
+;;; Code:
 
 (require 'cl-lib) ;; cl-member, cl-position
 
 ;;
-;;; Variables
+;;; Variables:
 
 (defvar key-assist-exclude-cmds
   '(ignore
@@ -147,10 +151,11 @@
 
 
 ;;
-;;; Internal functions
+;;; Internal functions:
 
 (defun key-assist--get-keybinding (cmd &optional key-map)
-  "Return a string with CMD's shortest keybinding."
+  "Return a string with CMD's shortest keybinding.
+Optional arg KEY-MAP defaults to local map."
   (let (shortest)
     (dolist (key (mapcar 'key-description
                          (where-is-internal
@@ -175,12 +180,15 @@ CMD is a symbol of an interactive command."
 (defun key-assist--vet-cmd (cmd result-list)
   "Check whether CMD should be on a `key-assist' list.
 
+Each element of RESULT-LIST is a CMD already accepted, in the
+form '(keybinding-string, CMD, description-string).
+
 See `key-assist-exclude-cmds' and `key-assist-exclude-regexps'."
   (and
     (symbolp cmd)
     (commandp cmd)
     (not (cl-member cmd result-list
-                    :test (lambda (cmd l) (equal cmd (nth 1 l))))) ; (assq cmd result-list))
+                    :test (lambda (cmd l) (equal cmd (nth 1 l)))))
     (not (memq cmd key-assist-exclude-cmds))
     (let ((not-found t)
           (cmd-string (symbol-name cmd)))
@@ -190,7 +198,11 @@ See `key-assist-exclude-cmds' and `key-assist-exclude-regexps'."
       not-found)))
 
 (defun key-assist--parse-cmd (cmd result-list &optional key-map)
-  "Extract commands and shortest keybindings from a keymap.
+  "Extract a command and shortest keybinding from a keymap.
+
+If KEY-MAP is nil, use the local map, and look for CMD there.
+Each element of RESULT-LIST is a CMD already accepted, in the
+form '(keybinding-string, CMD, description-string).
 
 This is an internal function used by `key-assist'. Returns a list
 whose elements are a keybinding string, a command symbol, and a
@@ -229,7 +241,7 @@ should accept a single list of elements (keybinding-string
 commandp description-string) and should return a list of
 elements (anything commandp description-string).
 
-Optional arg NOFINSH return a list in `key-assist--parse-cmd'
+Optional arg NOFINISH return a list in `key-assist--parse-cmd'
 format instead of the list of CONS described above. It is used
 internally for processing 'collection lists."
   (when (and spec
@@ -239,7 +251,7 @@ internally for processing 'collection lists."
                (boundp (intern spec))
                (keymapp (symbol-value (intern spec))))
         (setq spec (symbol-value (intern spec))))
-    (let (name result-elem (result-list '()))
+    (let (result-elem (result-list '()))
       (cond
        ((keymapp spec)
          (let (cmd)
@@ -254,7 +266,7 @@ internally for processing 'collection lists."
          (mapatoms
            (lambda (x)
               (and (commandp x)
-                   (string-match spec (setq name (symbol-name x)))
+                   (string-match spec (symbol-name x))
                    (when (setq result-elem
                            (key-assist--parse-cmd x result-list))
                      (push result-elem result-list))))))
@@ -281,7 +293,7 @@ internally for processing 'collection lists."
                                   (cadr elem)
                                  (funcall (cadr elem))))
                           result-list))))))))
-       (t (error "Improper SPEC format.")))
+       (t (error "Improper SPEC format")))
       (when (not nosort)
         (setq result-list
           (if (functionp nosort)
@@ -298,7 +310,7 @@ internally for processing 'collection lists."
                result-list)))))
 
 ;;
-;;; Interactive functions
+;;; Interactive functions:
 
 (defun key-assist (&optional spec prompt nosort)
   "Prompt to eval a locally relevant function, with hints and keybindings.
@@ -347,7 +359,7 @@ Select an item on the list to launch it: ")
 
 
 ;;
-;;; Conclusion
+;;; Conclusion:
 
 (provide 'key-assist)
 
