@@ -5,7 +5,7 @@
 
 ;; Author: Boruch Baum <boruch_baum@gmx.com>
 ;; Maintainer: Boruch Baum <boruch_baum@gmx.com>
-;; Homepage: ---------------------
+;; Homepage: https://github.com/Boruch-Baum/emacs-key-assist
 ;; Keywords: abbrev convenience docs help
 ;; Package: key-assist
 ;; Package-Version: 1.0
