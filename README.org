@@ -39,7 +39,7 @@
 
    How `key-assist' output displays will largely depend on what you
    use for your minibuffer completions. Here's an example of the
-   default output for an *Occur* buffer.
+   default output for an \*Occur\* buffer.
 
 #+BEGIN_SRC sh
 Select an item on the list to launch it:
