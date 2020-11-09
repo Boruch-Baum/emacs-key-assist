@@ -35,6 +35,22 @@
     that either `hydra` or `transient`. And it only requires the
     Emacs core function `completing-read`.
 
+** What it look likes
+
+   That will depend on what you use for your minibuffer completions.
+   Here's an example of the default output for an *Occur* buffer.
+
+#+BEGIN_SRC sh
+Select an item on the list to launch it:
+  e     Major mode for editing *Occur* buffers.
+> o     occur-mode-goto-occurrence-other-window (not documented)
+  r     Rename the current *Occur* buffer to *Occur: original-buffer-name*.
+  C-o   occur-mode-display-occurrence (not documented)
+  M-n   Move to the Nth (default 1) next match in an Occur mode buffer.
+  M-p   Move to the Nth (default 1) previous match in an Occur mode buffer.
+  RET   Go to the occurrence on the current line.
+  M-s o Drop-in replacement for `occur', but when called with a prefix
+#+END_SRC
 
 ** Dependencies:
 
