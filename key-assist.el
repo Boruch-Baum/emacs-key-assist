@@ -8,7 +8,7 @@
 ;; Homepage: https://github.com/Boruch-Baum/emacs-key-assist
 ;; Keywords: abbrev convenience docs help
 ;; Package: key-assist
-;; Package-Version: 1.0
+;; Version: 1.0
 ;; Package-Requires: ((emacs "24.3"))
 ;;
 ;;   (emacs "24.3") for: lexical-binding, user-error, cl-lib
@@ -162,7 +162,7 @@
   "Return a string with CMD's shortest keybinding.
 Optional arg KEY-MAP defaults to local map."
   (let (shortest)
-    (dolist (key (mapcar 'key-description
+    (dolist (key (mapcar #'key-description
                          (where-is-internal
                            cmd key-map nil t)))
       (when (or (not shortest)
@@ -348,7 +348,7 @@ Or enter a different command regexp or keymap name: " spec)
   (let (commands choices choice minibuffer-history)
     (while (not choices)
       (setq commands (key-assist--get-cmds spec nosort))
-      (when (not (setq choices (mapcar 'cdr commands)))
+      (when (not (setq choices (mapcar #'cdr commands)))
         (setq spec (read-regexp (format "No choices found for \"%s\".
 Try a differernt command regexp or keymap name: "
                                         spec)
