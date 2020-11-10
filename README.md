@@ -11,8 +11,9 @@ user a list of keybindings for commands specific to the current
 buffer's major-mode, but it's trivially simple to ask it to
 build an alternative (see below, section 'Interactive operation').
 
-* TIP: think of the default-action as an improved `C-h m` summary.
-* TLDR; enter a command substring to see all related bindings.
+:bulb: Think of the default-action as an improved `C-h m` summary.
+
+:checkered_flag: Enter a command substring to see all related bindings.
 
 Use this package to: learn keybindings; learn what commands are
 available specifically for the current buffer; run a command
@@ -126,13 +127,9 @@ in debian.
 
 * Copyright © 2020, Boruch Baum <boruch_baum@gmx.com>
 
-* Available for assignment to the Free Software Foundation, Inc.
-
 * License: GPLv3+
 
-* Author: Boruch Baum <boruch_baum@gmx.com>
-
-* Maintainer: Boruch Baum <boruch_baum@gmx.com>
+* Author/Maintainer: Boruch Baum <boruch_baum@gmx.com>
 
 * Homepage: https://github.com/Boruch-Baum/emacs-key-assist
 
@@ -143,6 +140,6 @@ in debian.
 * Package-Version: 1.0
 
 * Package-Requires:
-  * emacs 24.3 for: lexical-binding, user-error, cl-lib
+  * emacs 24.3 for: `lexical-binding`, `user-error`, `cl-lib`
 
 * This file is NOT part of GNU Emacs.
