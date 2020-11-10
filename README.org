@@ -83,9 +83,9 @@ Select an item on the list to launch it:
    buffer with too many obscure keybindings of little use.
 
    You can also respond to the prompt with your own regexp of
-   commands to show, or with the name of a keymap of your choice.
-   For the purposes of `key-assist`, a regexp can be just a
-   substring, without REQUIRING any leading or trailing globs.
+   any set of commands to show, or with the name of a keymap of
+   your choice. For the purposes of `key-assist`, a regexp can be
+   just a substring, without REQUIRING any leading or trailing globs.
 
    In all cases, note that the package can only present keybindings
    currently active in the current buffer, so if a sub-package
