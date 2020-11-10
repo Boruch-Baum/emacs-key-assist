@@ -9,7 +9,10 @@
     command on the cheat-sheet list. At its simplest, it gives the
     user a list of keybindings for commands specific to the current
     buffer's major-mode, but it's trivially simple to ask it to
-    build an alternative (see below).
+    build an alternative (see below, section 'Interactive operation').
+    
+    * TIP: think of the default-action as an improved `C-h m` summary.
+    * TLDR; enter a command substring to see all related bindings.
 
     Use this package to: learn keybindings; learn what commands are
     available specifically for the current buffer; run a command
@@ -57,11 +60,9 @@ Select an item on the list to launch it:
 
    `cl-lib`: For `cl-member`,`cl-position`
 
-
 ** Installation:
 
    1) Evaluate or load this file.
-
 
 ** Interactive operation:
 
@@ -92,7 +93,6 @@ Select an item on the list to launch it:
    presented. Also note that the commands are presented sorted by
    keybinding length, alphabetically.
 
-
 ** Programmating example:
 
    Here's a most simple example that presents all of the keybindings
@@ -112,19 +112,16 @@ Select an item on the list to launch it:
    `key-assist--get-cmds` for the description of ARGS that can be
    used to customize the output.
 
-
 ** Configuration:
 
    Two variables are available to exclude items from the
    presentation list: `key-assist-exclude-cmds` and
    `key-assist-exclude-regexps`. See there for further information.
 
-
 ** Compatability
 
    Tested with Emacs 26.1 and emacs-snapshot 28(~2020-09-16), both
    in debian.
-
 
 ** Colophon
 
