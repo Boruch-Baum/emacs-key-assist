@@ -1,8 +1,8 @@
-* key-assist.el - keybinding cheatsheet / launcher
+# key-assist.el - keybinding cheatsheet / launcher
 
-** Commentary:
+## Commentary:
 
-*** For Emacs *users*:
+### For Emacs *users*:
 
     This package provides an interactive command to easily produce
     a keybinding cheat-sheet "on-the-fly", and then to launch any
@@ -10,7 +10,7 @@
     user a list of keybindings for commands specific to the current
     buffer's major-mode, but it's trivially simple to ask it to
     build an alternative (see below, section 'Interactive operation').
-    
+
     * TIP: think of the default-action as an improved `C-h m` summary.
     * TLDR; enter a command substring to see all related bindings.
 
@@ -18,14 +18,14 @@
     available specifically for the current buffer; run a command
     from a descriptive list; and afterwards return to work quickly.
 
-*** For Emacs *programmers*:
+### For Emacs *programmers*:
 
     This package provides a simple, flexible way to produce custom
     keybinding cheat-sheets and command launchers for sets of
     commands, with each command being described, along with its direct
     keybinding for direct use without the launcher (see below).
 
-*** For everyone:
+### For everyone:
 
     If you've ever used packages such as `ivy` or `magit`, you've
     probably benefited from each's custom combination keybinding
@@ -38,13 +38,13 @@
     that either `hydra` or `transient`. And it only requires the
     Emacs core function `completing-read`.
 
-** What it look likes
+## What it look likes
 
    How `key-assist' output displays will largely depend on what you
    use for your minibuffer completions. Here's an example of the
    default output for an \*Occur\* buffer.
 
-#+BEGIN_SRC sh
+
 Select an item on the list to launch it:
   e     Major mode for editing *Occur* buffers.
 > o     occur-mode-goto-occurrence-other-window (not documented)
@@ -54,17 +54,17 @@ Select an item on the list to launch it:
   M-p   Move to the Nth (default 1) previous match in an Occur mode buffer.
   RET   Go to the occurrence on the current line.
   M-s o Drop-in replacement for `occur', but when called with a prefix
-#+END_SRC
 
-** Dependencies:
+
+## Dependencies:
 
    `cl-lib`: For `cl-member`,`cl-position`
 
-** Installation:
+## Installation:
 
    1) Evaluate or load this file.
 
-** Interactive operation:
+## Interactive operation:
 
    Run M-x `key-assist` from the buffer of interest. Specify a
    selection (or don't), press <TAB> to view the presentation, and
@@ -93,12 +93,12 @@ Select an item on the list to launch it:
    presented. Also note that the commands are presented sorted by
    keybinding length, alphabetically.
 
-** Programmating example:
+## Programmating example:
 
    Here's a most simple example that presents all of the keybindings
    for 'my-mode:
 
-      #+BEGIN_SRC emacs-lisp
+
       (defun my-mode-keybinding-cheatsheet-launcher ()
         (interactive)
         (when (eq major-mode my-mode)
@@ -106,24 +106,23 @@ Select an item on the list to launch it:
       (define-key my-mode-map "?"
                   'my-mode-keybinding-cheatsheet-launcher)
 
-      #+END_SRC
 
    See the docstrings for functions `key-assist` and
    `key-assist--get-cmds` for the description of ARGS that can be
    used to customize the output.
 
-** Configuration:
+## Configuration:
 
    Two variables are available to exclude items from the
    presentation list: `key-assist-exclude-cmds` and
    `key-assist-exclude-regexps`. See there for further information.
 
-** Compatability
+## Compatability
 
    Tested with Emacs 26.1 and emacs-snapshot 28(~2020-09-16), both
    in debian.
 
-** Colophon
+## Colophon
 
    Copyright © 2020, Boruch Baum <boruch_baum@gmx.com>
 
