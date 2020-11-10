@@ -141,5 +141,3 @@ in debian.
 
 * Package-Requires:
   * emacs 24.3 for: `lexical-binding`, `user-error`, `cl-lib`
-
-* This file is NOT part of GNU Emacs.
