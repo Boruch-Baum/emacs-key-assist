@@ -1,3 +1,5 @@
+[![MELPA](https://melpa.org/packages/key-assist-badge.svg)](https://melpa.org/#/key-assist)
+
 # key-assist.el - keybinding cheatsheet / launcher
 
 ## Commentary:
