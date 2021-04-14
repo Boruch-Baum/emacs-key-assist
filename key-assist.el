@@ -1,6 +1,6 @@
 ;;; key-assist.el --- Minibuffer keybinding cheatsheet and launcher -*- lexical-binding: t -*-
 
-;; Copyright © 2020, Boruch Baum <boruch_baum@gmx.com>
+;; Copyright © 2020-2021, Boruch Baum <boruch_baum@gmx.com>
 ;; Available for assignment to the Free Software Foundation, Inc.
 
 ;; Author: Boruch Baum <boruch_baum@gmx.com>
@@ -173,14 +173,14 @@ Optional arg KEY-MAP defaults to local map."
 (defun key-assist--get-description (cmd)
   "Return a string with CMD's description.
 CMD is a symbol of an interactive command."
-;; TODO: Change hard-coded length to an ARG.
   (let ((doc (documentation cmd t)))
     (format "\t%s"
-      (if (or (not doc)
-              (not (string-match "\n" doc))
-              (zerop (match-beginning 0)))
+      (if (or (not (stringp doc))
+              (string-empty-p doc))
         (concat (symbol-name cmd) " (not documented)")
-       (substring doc 0 (match-beginning 0))))))
+       (if (string-match "\n" doc)
+         (substring doc 0 (match-beginning 0))
+         doc)))))
 
 (defun key-assist--vet-cmd (cmd result-list)
   "Check whether CMD should be on a `key-assist' list.
@@ -299,10 +299,13 @@ internally for processing 'collection lists."
                                  (funcall (cadr elem))))
                           result-list))))))))
        (t (error "Improper SPEC format")))
-      (when (not nosort)
-        (setq result-list
-          (if (functionp nosort)
-            (funcall nosort result-list)
+      (setq result-list (nreverse result-list))
+      (setq result-list
+        (cond
+         ((functionp nosort)
+           (funcall nosort result-list))
+         (nosort result-list)
+         (t ; ie. (eq nosort nil)
            (sort result-list
                  (lambda (a b) (cond
                                 ((= (length (car a)) (length (car b)))
@@ -345,7 +348,8 @@ Or enter a different command regexp or keymap name: " spec)
             (and (stringp spec)
                  (zerop (length spec))))
     (user-error "Nothing to do!"))
-  (let (commands choices choice minibuffer-history)
+  (let ((tab-width 11)
+        commands choices choice minibuffer-history)
     (while (not choices)
       (setq commands (key-assist--get-cmds spec nosort))
       (when (not (setq choices (mapcar #'cdr commands)))
@@ -374,3 +378,6 @@ Select an item on the list to launch it: ")
 ;; * ref: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=43709
 ;;        mailto: 43709@debbugs.gnu.org
 ;; * defcustoms should include  :version "28.1"
+
+;; TODO: Don't require existence of a keybinding for elements in an
+;;       explicit SPEC, and let the user execute the command.

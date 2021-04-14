@@ -1,0 +1,6 @@
+2021-04-13  Boruch Baum  <boruch_baum@gmx.com>
+
+	* key-assist.el (key-assist--get-description): BUGFIX for
+	single-line docstrings.
+	(key-assist--get-cmds): BUGFIX for sorting.
+	(key-assist): Extend default tab-width for readability
