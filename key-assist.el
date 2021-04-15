@@ -166,7 +166,9 @@ Optional arg KEY-MAP defaults to local map."
                          (where-is-internal
                            cmd key-map nil t)))
       (when (or (not shortest)
-                (> (length shortest) (length key)))
+                (> (length shortest) (length key))
+                (and (= 1 (length key))
+                     (equal key (downcase key))))
         (setq shortest key)))
     shortest))
 
@@ -178,9 +180,11 @@ CMD is a symbol of an interactive command."
       (if (or (not (stringp doc))
               (string-empty-p doc))
         (concat (symbol-name cmd) " (not documented)")
-       (if (string-match "\n" doc)
-         (substring doc 0 (match-beginning 0))
-         doc)))))
+       (when (string-match "\n" doc)
+         (setq doc (substring doc 0 (match-beginning 0))))
+       (if (equal "." (substring doc -1))
+         (substring doc 0 -1)
+        doc)))))
 
 (defun key-assist--vet-cmd (cmd result-list)
   "Check whether CMD should be on a `key-assist' list.

@@ -1,3 +1,10 @@
+2021-04-14  Boruch Baum  <boruch_baum@gmx.com>
+
+	* key-assist.el (key-assist--get-keybinding): Prefer lower-case
+	key-binding over upper-case.
+	(key-assist--get-description): Don't display trailing full-stop in
+	description string.
+
 2021-04-13  Boruch Baum  <boruch_baum@gmx.com>
 
 	* key-assist.el (key-assist--get-description): BUGFIX for
