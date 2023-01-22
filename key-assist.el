@@ -325,6 +325,7 @@ internally for processing 'collection lists."
 ;;
 ;;; Interactive functions:
 
+;;;###autoload
 (defun key-assist (&optional spec prompt nosort)
   "Prompt to eval a locally relevant function, with hints and keybindings.
 Press TAB to see the hints.
