@@ -53,21 +53,21 @@
 ;;     direct keybinding for direct use without the launcher (see
 ;;     below).
 ;;
-;;   If you've ever used packages such as `ivy' or `magit', you've
+;;   If you've ever used packages such as 'ivy' or 'magit', you've
 ;;   probably benefited from each's custom combination keybinding
-;;   cheatsheet and launcher: `hydra' in the case of `ivy', and
-;;   `transient' for `magit'. The current package `key-assist' offers
+;;   cheatsheet and launcher: 'hydra' in the case of 'ivy', and
+;;   'transient' for 'magit'. The current package 'key-assist' offers
 ;;   a generic and very simple alternative requiring only the
-;;   `completing-read' function commonly used in core vanilla Emacs.
-;;   `key-assist' is trivial to implement "on-the-fly" interactively
+;;   'completing-read' function commonly used in core vanilla Emacs.
+;;   'key-assist' is trivial to implement "on-the-fly" interactively
 ;;   for any buffer, and programmatically much simpler to customize
-;;   that either `hydra' or `transient'. And it only requires the
-;;   Emacs core function `completing-read'.
+;;   that either 'hydra' or 'transient'. And it only requires the
+;;   Emacs core function 'completing-read'.
 
 ;;
 ;;; Dependencies:
 
-;; `cl-lib': For `cl-member',`cl-position'
+;; 'cl-lib': For 'cl-member','cl-position'
 
 ;;
 ;;; Installation:
@@ -77,7 +77,7 @@
 ;;
 ;;; Interactive operation:
 
-;;   Run M-x `key-assist' from the buffer of interest. Specify a
+;;   Run M-x 'key-assist' from the buffer of interest. Specify a
 ;;   selection (or don't), press <TAB> to view the presentation, and
 ;;   then either exit with your new-found knowledge of the command
 ;;   keybindings, or use standard Emacs tab completion to select an
@@ -86,16 +86,16 @@
 ;;   If you choose not to respond to the initial prompt, a list of
 ;;   keybindings and command descriptions will be generated based upon
 ;;   the first word of the buffer's major mode. For, example, in a
-;;   `w3m' buffer, the list will be of all interactive functions
-;;   beginning `w3m-'. This works out to be great as a default, but
-;;   isn't always useful. For example, in an `emacs-lisp-mode' buffer
-;;   or a `lisp-interaction-mode', what would you expect it to
+;;   'w3m' buffer, the list will be of all interactive functions
+;;   beginning 'w3m-'. This works out to be great as a default, but
+;;   isn't always useful. For example, in an 'emacs-lisp-mode' buffer
+;;   or a 'lisp-interaction-mode', what would you expect it to
 ;;   usefully produce? At the other extreme might be a case of a
 ;;   buffer with too many obscure keybindings of little use.
 
 ;;   You can also respond to the prompt with your own regexp of
 ;;   commands to show, or with the name of a keymap of your choice.
-;;   For the purposes of `key-assist', a regexp can be just a
+;;   For the purposes of 'key-assist', a regexp can be just a
 ;;   substring, without REQUIRING any leading or trailing globs.
 
 ;;   In all cases, note that the package can only present keybindings
@@ -117,16 +117,16 @@
 ;;      (define-key my-mode-map "?"
 ;;                  'my-mode-keybinding-cheatsheet-launcher)
 
-;;   See the docstrings for functions `key-assist' and
-;;   `key-assist--get-cmds' for the description of ARGS that can be
+;;   See the docstrings for functions 'key-assist' and
+;;   'key-assist--get-cmds' for the description of ARGS that can be
 ;;   used to customize the output.
 
 ;;
 ;;; Configuration:
 
 ;;   Two variables are available to exclude items from the
-;;   presentation list: `key-assist-exclude-cmds' and
-;;   `key-assist-exclude-regexps'. See there for further information.
+;;   presentation list: 'key-assist-exclude-cmds' and
+;;   'key-assist-exclude-regexps'. See there for further information.
 
 ;;
 ;;; Compatability
@@ -149,10 +149,10 @@
     digit-argument
     negative-argument
     describe-mode)
-  "List of commands to always exclude from `key-assist' output.")
+  "List of commands to always exclude from 'key-assist' output.")
 
 (defvar key-assist-exclude-regexps '("-mouse-")
-  "List of regexps of commands to exclude from `key-assist' output.")
+  "List of regexps of commands to exclude from 'key-assist' output.")
 ;; TODO: Don't depend upon a mouse command having the word '-mouse-' in it.
 
 
@@ -188,12 +188,12 @@ CMD is a symbol of an interactive command."
         doc)))))
 
 (defun key-assist--vet-cmd (cmd result-list)
-  "Check whether CMD should be on a `key-assist' list.
+  "Check whether CMD should be on a 'key-assist' list.
 
 Each element of RESULT-LIST is a CMD already accepted, in the
 form '(keybinding-string, CMD, description-string).
 
-See `key-assist-exclude-cmds' and `key-assist-exclude-regexps'."
+See 'key-assist-exclude-cmds' and 'key-assist-exclude-regexps'."
   (and
     (symbolp cmd)
     (commandp cmd)
@@ -214,7 +214,7 @@ If KEY-MAP is nil, use the local map, and look for CMD there.
 Each element of RESULT-LIST is a CMD already accepted, in the
 form '(keybinding-string, CMD, description-string).
 
-This is an internal function used by `key-assist'. Returns a list
+This is an internal function used by 'key-assist'. Returns a list
 whose elements are a keybinding string, a command symbol, and a
 description string."
   (when (key-assist--vet-cmd cmd result-list)
@@ -251,7 +251,7 @@ should accept a single list of elements (keybinding-string
 commandp description-string) and should return a list of
 elements (anything commandp description-string).
 
-Optional arg NOFINISH return a list in `key-assist--parse-cmd'
+Optional arg NOFINISH return a list in 'key-assist--parse-cmd'
 format instead of the list of CONS described above. It is used
 internally for processing 'collection lists."
   (when (and spec
@@ -338,10 +338,10 @@ sorted alphabetically by keybinding length.
 
 Programmatically, optional arg PROMPT can be used to customize
 the prompt. For the further programmatic options of SPEC and for
-a description of arg NOSORT, see function `key-assist--get-cmds'.
+a description of arg NOSORT, see function 'key-assist--get-cmds'.
 
-See also variables `key-assist-exclude-regexps' and
-`key-assist-exclude-cmds'."
+See also variables 'key-assist-exclude-regexps' and
+'key-assist-exclude-cmds'."
   (interactive)
   (when (not spec)
     (setq spec (symbol-name major-mode)
